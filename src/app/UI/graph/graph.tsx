@@ -1,7 +1,7 @@
 import { dailyOpen } from "@/APIcalls/apiCall";
 import Chart from "react-apexcharts";
 import { DailyStock, stocksLegend } from "@/model/model";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { issueDate } from "../issueDate/issueDate";
 import { useQuery } from "react-query";
 
@@ -50,7 +50,7 @@ const Graph = ({ res }: any) => {
       chart: {
         type: "bar",
         width: "100%",
-        height: 10,
+        height: 300,
       },
       plotOptions: {
         bar: {
@@ -69,7 +69,7 @@ const Graph = ({ res }: any) => {
       },
       responsive: [
         {
-          breakpoint: 100,
+          breakpoint: 1000,
           yaxis: {
             categories: categories,
           },
@@ -126,7 +126,9 @@ const Graph = ({ res }: any) => {
           <Typography fontSize={"1rem"} textAlign={"center"}>
             Daily Open and close of {issueDate(data.from)}
           </Typography>
-          <Chart options={options} series={sequence} type="bar" />
+          <Box sx={{ width: { md: "50rem" }, margin: "auto" }}>
+            <Chart options={options} series={sequence} type="bar" />
+          </Box>
         </>
       )}
     </div>

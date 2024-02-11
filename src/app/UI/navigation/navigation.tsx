@@ -10,14 +10,7 @@ export const Navigation = () => {
     list-style-type: none;
   `;
   return (
-    <Stack direction={"row"} justifyContent={"space-between"}>
-      <List>
-        <li style={{ textDecoration: "none" }}>
-          <Link style={{ textDecoration: "none", color: "red" }} href="/">
-            Home
-          </Link>
-        </li>
-      </List>
+    <Stack direction={"row"} justifyContent={"flex-end"}>
       <ThemeButton />
     </Stack>
   );
