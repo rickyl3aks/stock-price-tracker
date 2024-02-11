@@ -12,7 +12,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "Tech Stocks",
+  title: "Stock Price Tracker",
   description: "Stock API with real-time and historical tick data",
 };
 
