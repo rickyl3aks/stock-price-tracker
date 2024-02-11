@@ -1,18 +1,17 @@
 :root {
+  background: #f0cc9d;
 }
 
-[data-theme='dark'],
-[data-theme='dark'] body {
+[data-theme="dark"],
+[data-theme="dark"] body {
   color: #cac7c7;
-  background: #1c1b22;
+  background: #222929;
 }
 
 * {
-  margin: 0.2rem;
+  margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+

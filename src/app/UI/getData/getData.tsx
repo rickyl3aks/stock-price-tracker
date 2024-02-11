@@ -1,21 +1,18 @@
 "use client";
 
-import { Button, TextField, Stack } from "@mui/material";
-import React, { useState } from "react";
+import { Button, TextField, Stack, MenuItem, Typography, Box } from "@mui/material";
+import { useState } from "react";
 import Graph from "../graph/graph";
+import React from "react";
+import { maxRestriction, minRestriction } from "@/app/restriction/restriction";
+import { stocks } from "@/model/model";
 
 interface Result {
   stocksTicker: string;
-  multiplier: string;
-  timeSpan: string;
-  from: string;
-  to: string;
-  sortValue: string;
+  date: string;
 }
 
-const GetData = ({ setRes, children }: any) => {
-  const sort = ["Ascending Order", "Descending Order"];
-
+const GetData = () => {
   const inputLabelProps = {
     style: { color: "#1E90FF" },
   };
@@ -36,14 +33,9 @@ const GetData = ({ setRes, children }: any) => {
 
   const [values, setValues] = useState<Result>({
     stocksTicker: "",
-    multiplier: "",
-    timeSpan: "",
-    from: "",
-    to: "",
-    sortValue: "",
+    date: "",
   });
   const [result, setResult] = useState<string | Result>("");
-  const [data, setData] = useState<string | Result>("");
 
   const handleChange = (key: keyof Result) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValues({ ...values, [key]: event.target.value });
@@ -52,63 +44,69 @@ const GetData = ({ setRes, children }: any) => {
   const handleButtonClick = () => {
     const dateFormatRegex = /^\d{4}\-\d{2}\-\d{2}$/;
 
-    const { stocksTicker, multiplier, timeSpan, from, to, sortValue } = values;
-    if (!dateFormatRegex.test(from) || !dateFormatRegex.test(to)) {
+    const { stocksTicker, date } = values;
+    if (!dateFormatRegex.test(date)) {
       setResult("Date format is incorrect, please insert YYYY-MM-DD");
       return;
     }
-    if (!stocksTicker || !multiplier || !timeSpan || !from || !to || !sortValue || !dateFormatRegex.test(from) || !dateFormatRegex.test(to)) {
+    if (!stocksTicker || !date || !dateFormatRegex.test(date)) {
       setResult("All fields are required");
     } else {
       setResult({
         ...values,
-        sortValue: sortValue === "Ascending Order" ? "asc" : "desc",
       });
     }
   };
 
   return (
     <>
-      <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" gap={1}>
-        {Object.entries(values).map(
-          ([key, value], index, array) =>
-            index !== array.length - 1 && (
-              <TextField
-                key={key}
-                value={value}
-                onChange={handleChange(key as keyof Result)}
-                InputLabelProps={inputLabelProps}
-                sx={{ ...inputSxProps, width: "100%" }}
-                id={`outlined-${key}`}
-                label={key === "from" || key === "to" ? key + " YYYY-MM-DD" : key.charAt(0).toUpperCase() + key.slice(1)}
-                variant="outlined"
-              />
-            )
-        )}
+      <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" sx={{ width: "60vw", margin: "auto" }} gap={1}>
         <TextField
-          value={values.sortValue}
-          onChange={handleChange("sortValue")}
+          select
+          key="select a ticker"
+          value={values.stocksTicker}
+          onChange={handleChange("stocksTicker")}
           InputLabelProps={inputLabelProps}
           sx={{ ...inputSxProps, width: "100%" }}
-          id="outlined-basic"
-          select
+          id="outlined-stocksTicker"
+          label="Select a Ticker"
           variant="outlined"
-          SelectProps={{
-            native: true,
-            style: { color: "#1E90FF" },
-          }}
         >
-          {sort.map((option, idx) => (
-            <option key={idx} value={option}>
-              {option}
-            </option>
+          {Object.keys(stocks[0]).map((symbol: string) => (
+            <MenuItem key={symbol} value={symbol}>
+              {stocks[0][symbol as keyof (typeof stocks)[0]]}
+            </MenuItem>
           ))}
         </TextField>
+        {Object.entries(values).map(([key, value], index, array) => (
+          <React.Fragment key={key}>
+            <TextField
+              key={key}
+              value={value}
+              type={key === "date" ? "date" : undefined}
+              onChange={handleChange(key as keyof Result)}
+              inputProps={{ min: minRestriction(), max: maxRestriction() }}
+              InputLabelProps={inputLabelProps}
+              sx={{ ...inputSxProps, width: "100%" }}
+              id={`outlined-${key}`}
+              label={key === "date" ? "" : key.charAt(0).toUpperCase() + key.slice(1)}
+              variant="outlined"
+            />
+          </React.Fragment>
+        ))}
       </Stack>
-      <Button variant="contained" onClick={handleButtonClick}>
-        Get Result
-      </Button>
-      <Graph res={result} />
+      <Box textAlign="center" m={5}>
+        <Button variant="contained" onClick={handleButtonClick}>
+          Get Result
+        </Button>
+      </Box>
+      {result && typeof result === "string" ? (
+        <Typography textAlign={"center"} m={3}>
+          {result}
+        </Typography>
+      ) : (
+        result && <Graph key={JSON.stringify(result)} res={result as Result} />
+      )}
     </>
   );
 };

@@ -1,47 +1,56 @@
-import { fetchStockData } from "@/APIcalls/apiCall";
-import { useQuery } from "react-query";
+import { dailyOpen } from "@/APIcalls/apiCall";
 import Chart from "react-apexcharts";
-import { StockResults } from "@/model/model";
+import { DailyStock, stocksLegend } from "@/model/model";
+import { Typography } from "@mui/material";
+import { issueDate } from "../issueDate/issueDate";
+import { useQuery } from "react-query";
 
 const Graph = ({ res }: any) => {
   const { data, isLoading, isError, error } = useQuery({
-    queryFn: () => fetchStockData("AAPL", "1", "day", "2024-01-02", "2024-01-02", "asc"),
-    queryKey: ["todos"],
+    queryFn: () => {
+      if (res) {
+        const { stocksTicker, date } = res;
+        if (stocksTicker !== undefined && date !== undefined) {
+          return dailyOpen(stocksTicker.toUpperCase(), date);
+        }
+      }
+    },
+    queryKey: ["Daily stock market"],
   });
 
-  let options: any = null;
-  let serie = null;
+  const { stocksTicker, date } = res;
 
-  if (data) {
-    const updatedResults = data.results.map((result: any) => {
-      const { n, v, t, ...updatedResult } = result;
-      return updatedResult;
-    });
-
-    const updatedData = {
-      ...data,
-      results: updatedResults,
-    };
-
-    const keyMapping: StockResults = {
-      // v: "Volume",
-      vw: "Volume Weighted Average",
-      o: "Open Price",
-      c: "Close Price",
-      h: "Highest Price",
-      l: "Lowest Price",
-      // n: "Number of Transactions",
-    };
-    const categories = updatedData.results.flatMap((key: string) =>
-      Object.keys(key).map((initialKey) => keyMapping[initialKey as keyof StockResults])
+  if (data === 429) {
+    return (
+      <Typography mt={10} textAlign={"center"} fontSize={"1.1rem"}>
+        Hold your horses! 🐎 Too many requests Give it a sec and try again!
+      </Typography>
     );
-    const series = updatedData.results.flatMap((value: string) => Object.values(value));
+  }
+  let options: any = null;
+  let sequence = null;
+
+  if (data !== undefined && data !== 404 && data?.status !== 400 && data?.status !== 404 && data?.status !== 429) {
+    const keyMapping: DailyStock = {
+      open: "Opening Price",
+      high: "Highest Price",
+      low: "Lowest Price",
+      close: "Closing Price",
+      volume: "Trading Volume",
+      afterHours: "After hours Price",
+      preMarket: "Pre-market Price",
+    };
+
+    const keys = ["open", "high", "low", "close", "afterHours", "preMarket"];
+
+    const categories = keys.filter((key) => key in data);
+    const series = categories.map((key) => data[key]);
 
     options = {
       chart: {
         type: "bar",
         width: "100%",
-        height: 380,
+        height: 10,
       },
       plotOptions: {
         bar: {
@@ -49,12 +58,18 @@ const Graph = ({ res }: any) => {
           columnWidth: "80%",
         },
       },
+      legend: {
+        show: true,
+      },
+      noData: {
+        text: "Loading...",
+      },
       xaxis: {
         categories: categories,
       },
       responsive: [
         {
-          breakpoint: 1000,
+          breakpoint: 100,
           yaxis: {
             categories: categories,
           },
@@ -69,23 +84,53 @@ const Graph = ({ res }: any) => {
       ],
     };
 
-    serie = [
+    sequence = [
       {
-        name: data?.ticker,
+        name: stocksTicker,
         data: series,
       },
     ];
   }
 
-  // if (!res) {
-  //   return <div>Please try again...</div>;
-  // }
+  if (data === 404) {
+    const currentDate: any = new Date();
+    const now = Date.parse(currentDate);
+    const timesCheck = Date.parse(date);
+    return (
+      <>
+        {timesCheck > now ? (
+          <Typography mt={10} textAlign={"center"} fontSize={"1.1rem"}>
+            Looks like your checking the future... Try again with a another date
+          </Typography>
+        ) : (
+          <Typography mt={10} textAlign={"center"} fontSize={"1.1rem"}>
+            Oops! It looks like we couldn&apos;t find what you&apos;re searching for. Please double-check the stock symbol and/or {date} to ensure
+            it&apos;s available
+          </Typography>
+        )}
+      </>
+    );
+  }
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  return <div>{options && serie && <Chart options={options} series={serie} type="bar" />}</div>;
+  return (
+    <div>
+      {options && sequence && (
+        <>
+          <Typography variant={"h1"} textAlign={"center"} fontSize={"1.5rem"}>
+            Stock of {stocksLegend.map((name: any) => name[data.symbol] ?? data.symbol)}
+          </Typography>
+          <Typography fontSize={"1rem"} textAlign={"center"}>
+            Daily Open and close of {issueDate(data.from)}
+          </Typography>
+          <Chart options={options} series={sequence} type="bar" />
+        </>
+      )}
+    </div>
+  );
 };
 
 export default Graph;
