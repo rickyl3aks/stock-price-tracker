@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={roboto.className}>
         <Providers>
-          <div style={{ margin: "0.2rem" }}>
+          <div style={{ margin: "1rem" }}>
             <header>
               <nav>
                 <Navigation />

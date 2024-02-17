@@ -4,6 +4,7 @@ import { DailyStock, stocksLegend } from "@/model/model";
 import { Box, Typography } from "@mui/material";
 import { issueDate } from "../issueDate/issueDate";
 import { useQuery } from "react-query";
+import React from "react";
 
 const Graph = ({ res }: any) => {
   const { data, isLoading, isError, error } = useQuery({
@@ -49,35 +50,98 @@ const Graph = ({ res }: any) => {
     options = {
       chart: {
         type: "bar",
+        height: 350,
         width: "100%",
-        height: 300,
+        background: "#fff",
       },
       plotOptions: {
         bar: {
-          horizontal: false,
-          columnWidth: "80%",
+          horizontal: true,
+          borderRadius: 3,
+          barHeight: "60%",
+        },
+      },
+      title: {
+        text: stocksLegend.map((name: any) => name[data.symbol] ?? data.symbol),
+        align: "center",
+        style: {
+          fontSize: "25px",
+          fontWeight: "bold",
         },
       },
       legend: {
         show: true,
       },
+      tooltip: {
+        theme: "dark",
+        style: {
+          fontSize: "18px",
+        },
+        marker: {
+          show: true,
+        },
+      },
       noData: {
         text: "Loading...",
       },
+      dataLabels: {
+        style: {
+          fontSize: "18px",
+        },
+      },
+      fill: {
+        colors: ["#F44336"],
+      },
       xaxis: {
         categories: categories,
+
+        labels: {
+          style: {
+            fontSize: "18px",
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          style: {
+            fontSize: "18px",
+          },
+        },
       },
       responsive: [
         {
           breakpoint: 1000,
-          yaxis: {
-            categories: categories,
-          },
           options: {
+            chart: {
+              height: "400px",
+            },
+            xaxis: {
+              labels: {
+                style: {
+                  fontSize: "10px",
+                },
+              },
+            },
+            yaxis: {
+              categories: categories,
+              labels: {
+                style: {
+                  fontSize: "10px",
+                },
+              },
+            },
+            dataLabels: {
+              style: {
+                fontSize: "10px",
+              },
+            },
             plotOptions: {
               bar: {
-                horizontal: true,
+                horizontal: false,
               },
+            },
+            legend: {
+              position: "bottom",
             },
           },
         },
@@ -112,24 +176,17 @@ const Graph = ({ res }: any) => {
     );
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div>
       {options && sequence && (
-        <>
-          <Typography variant={"h1"} textAlign={"center"} fontSize={"1.5rem"}>
-            Stock of {stocksLegend.map((name: any) => name[data.symbol] ?? data.symbol)}
-          </Typography>
-          <Typography fontSize={"1rem"} textAlign={"center"}>
+        <React.Fragment>
+          <Typography fontSize={"1rem"} mb={3} textAlign={"center"}>
             Daily Open and close of {issueDate(data.from)}
           </Typography>
           <Box sx={{ width: { md: "50rem" }, margin: "auto" }}>
             <Chart options={options} series={sequence} type="bar" />
           </Box>
-        </>
+        </React.Fragment>
       )}
     </div>
   );
