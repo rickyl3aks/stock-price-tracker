@@ -5,6 +5,7 @@ import { Box, Typography } from "@mui/material";
 import { issueDate } from "../issueDate/issueDate";
 import { useQuery } from "react-query";
 import React from "react";
+import PriceChange from "../priceChange/priceChange";
 
 const Graph = ({ res }: any) => {
   const { data, isLoading, isError, error } = useQuery({
@@ -180,10 +181,14 @@ const Graph = ({ res }: any) => {
     <div>
       {options && sequence && (
         <React.Fragment>
+          <Typography variant={"h1"} textAlign={"center"} fontSize={"1.5rem"}>
+            Stock of {stocksLegend.map((name: any) => name[data.symbol] ?? data.symbol)}
+          </Typography>
           <Typography fontSize={"1rem"} mb={3} textAlign={"center"}>
             Daily Open and close of {issueDate(data.from)}
           </Typography>
           <Box sx={{ width: { md: "50rem" }, margin: "auto" }}>
+            <PriceChange stockData={data} />
             <Chart options={options} series={sequence} type="bar" />
           </Box>
         </React.Fragment>
