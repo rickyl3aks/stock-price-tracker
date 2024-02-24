@@ -1,11 +1,12 @@
 import { dailyOpen } from "@/APIcalls/apiCall";
 import Chart from "react-apexcharts";
 import { DailyStock, stocksLegend } from "@/model/model";
-import { Box, Typography } from "@mui/material";
+import { Box, Chip, Divider, Typography, styled } from "@mui/material";
 import { issueDate } from "../issueDate/issueDate";
 import { useQuery } from "react-query";
 import React from "react";
 import PriceChange from "../priceChange/priceChange";
+import { Stack } from "@mui/system";
 
 const Graph = ({ res }: any) => {
   const { data, isLoading, isError, error } = useQuery({
@@ -177,16 +178,32 @@ const Graph = ({ res }: any) => {
     );
   }
 
+  const Container = styled(Stack)`
+    background-color: #b3443c;
+    align-content: center;
+    align-items: center;
+    padding: 1rem 0;
+    max-width: 500px;
+    margin: 1rem auto;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 10px;
+  `;
+
   return (
     <div>
       {options && sequence && (
         <React.Fragment>
-          <Typography variant={"h1"} textAlign={"center"} fontSize={"1.5rem"}>
-            Stock of {stocksLegend.map((name: any) => name[data.symbol] ?? data.symbol)}
-          </Typography>
-          <Typography fontSize={"1rem"} mb={3} textAlign={"center"}>
-            Daily Open and close of {issueDate(data.from)}
-          </Typography>
+          <Container>
+            <Typography variant="h1" fontSize="1.8rem" fontWeight="bold" align="center">
+              Stock of {stocksLegend.map((name: any) => name[data.symbol] ?? data.symbol)}
+            </Typography>
+            <Divider sx={{ width: "80%", margin: "1rem 0", borderBottomWidth: 5 }}>
+              <Chip sx={{ color: "white" }} label="Date" size="small" />
+            </Divider>
+            <Typography fontSize="1rem" align="center">
+              - Daily Open and close of {issueDate(data.from)} -
+            </Typography>
+          </Container>
           <Box sx={{ width: { md: "50rem" }, margin: "auto" }}>
             <PriceChange stockData={data} />
             <Chart options={options} series={sequence} type="bar" />
