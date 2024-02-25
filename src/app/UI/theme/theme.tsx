@@ -15,7 +15,8 @@ export const ThemeButton = () => {
   }
 
   const Btn = styled("button")`
-    background-color: #bbb;
+    background-color: #242222;
+    color: white;
     border: none;
     padding: 0.3rem;
     border-radius: 50%;

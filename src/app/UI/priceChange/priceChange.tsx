@@ -68,7 +68,7 @@ const PriceChange = ({ stockData }: any) => {
   const series: any = [meanPricePercentage.toFixed(2)];
 
   const Title = styled(Typography)`
-    font-size: rem;
+    color: #000;
     font-weight: bold;
   `;
 

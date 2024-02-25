@@ -5,6 +5,7 @@ import { Navigation } from "./UI/navigation/navigation";
 import { Roboto } from "next/font/google";
 import TopLine from "./UI/topLine/topLine";
 import Footer from "./UI/footer/footer";
+import Box from "@mui/material/Box";
 
 const roboto = Roboto({
   weight: "400",
@@ -25,14 +26,16 @@ export default function RootLayout({
     <html lang="en">
       <body className={roboto.className}>
         <Providers>
-          <div style={{ margin: "1rem" }}>
+          <div>
             <header>
               <nav>
                 <Navigation />
               </nav>
-              <TopLine />
             </header>
-            <main>{children}</main>
+            <Box sx={{ margin: "4rem auto",  width: "80vw", maxWidth: "700px" }}>
+              <TopLine />
+              <main>{children}</main>
+            </Box>
           </div>
           <footer style={{ position: "relative", height: "50vh" }}>
             <Footer />

@@ -25,7 +25,7 @@ const Graph = ({ res }: any) => {
 
   if (data === 429) {
     return (
-      <Typography mt={10} textAlign={"center"} fontSize={"1.1rem"}>
+      <Typography mt={10} textAlign={"center"} color="#000" fontSize={"20px"}>
         Hold your horses! 🐎 Too many requests Give it a sec and try again!
       </Typography>
     );
@@ -165,11 +165,11 @@ const Graph = ({ res }: any) => {
     return (
       <>
         {timesCheck > now ? (
-          <Typography mt={10} textAlign={"center"} fontSize={"1.1rem"}>
+          <Typography mt={10} textAlign={"center"} color="#000" fontSize={"20px"}>
             Looks like your checking the future... Try again with a another date
           </Typography>
         ) : (
-          <Typography mt={10} textAlign={"center"} fontSize={"1.1rem"}>
+          <Typography mt={10} textAlign={"center"} color="#000" fontSize={"20px"}>
             Oops! It looks like we couldn&apos;t find what you&apos;re searching for. Please double-check the stock symbol and/or {date} to ensure
             it&apos;s available
           </Typography>
@@ -178,32 +178,41 @@ const Graph = ({ res }: any) => {
     );
   }
 
-  const Container = styled(Stack)`
-    background-color: #b3443c;
-    align-content: center;
-    align-items: center;
-    padding: 1rem 0;
-    max-width: 500px;
-    margin: 1rem auto;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    border-radius: 10px;
+  const Header = styled("span")`
+    font-weight: bold;
+    color: #224128;
+  `;
+
+  const Rect = styled(Box)`
+    position: absolute;
+    z-index: -2;
+    top: 13px;
+    left: 15px;
+    width: 80vw;
+    overflow-x: auto;
+    height: 6.5rem;
+    background-color: #d9d9d9;
+
+    @media (min-width: 600px) {
+      top: 25px;
+      left: 20px;
+    }
   `;
 
   return (
-    <div>
+    <div style={{ margin: "5rem 0" }}>
       {options && sequence && (
         <React.Fragment>
-          <Container>
-            <Typography variant="h1" fontSize="1.8rem" fontWeight="bold" align="center">
-              Stock of {stocksLegend.map((name: any) => name[data.symbol] ?? data.symbol)}
+          <Box sx={{ position: "relative", zIndex: "5" }}>
+            <Rect />
+            <Typography fontSize={{ xs: 23, sm: 40 }} color="#000" fontWeight={"bold"}>
+              <Header>STOCK</Header> of {stocksLegend.map((name: any) => name[data.symbol] ?? data.symbol)}
             </Typography>
-            <Divider sx={{ width: "80%", margin: "1rem 0", borderBottomWidth: 5 }}>
-              <Chip sx={{ color: "white" }} label="Date" size="small" />
-            </Divider>
-            <Typography fontSize="1rem" align="center">
-              - Daily Open and close of {issueDate(data.from)} -
+
+            <Typography mb={3} fontFamily={"Raleway"} fontSize={{ xs: 14, sm: 21 }} color="#000">
+              Daily Open and close of {issueDate(data.from)}
             </Typography>
-          </Container>
+          </Box>
           <Box sx={{ width: { md: "50rem" }, margin: "auto" }}>
             <PriceChange stockData={data} />
             <Chart options={options} series={sequence} type="bar" />
