@@ -43,7 +43,7 @@ const GetData = () => {
   };
 
   const inputLabelProps = {
-    style: { color: "#1E90FF" },
+    style: { color: "rgba(0, 0, 0, 0.87)" },
   };
 
   const theme = createTheme({

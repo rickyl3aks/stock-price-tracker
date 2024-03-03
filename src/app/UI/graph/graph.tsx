@@ -1,12 +1,12 @@
 import { dailyOpen } from "@/APIcalls/apiCall";
 import Chart from "react-apexcharts";
 import { DailyStock, stocksLegend } from "@/model/model";
-import { Box, Chip, Divider, Typography, styled } from "@mui/material";
+import { Box, Typography, styled } from "@mui/material";
 import { issueDate } from "../issueDate/issueDate";
 import { useQuery } from "react-query";
 import React from "react";
 import PriceChange from "../priceChange/priceChange";
-import { Stack } from "@mui/system";
+import style from "./graph.module.css";
 
 const Graph = ({ res }: any) => {
   const { data, isLoading, isError, error } = useQuery({
@@ -183,32 +183,15 @@ const Graph = ({ res }: any) => {
     color: #224128;
   `;
 
-  const Rect = styled(Box)`
-    position: absolute;
-    z-index: -2;
-    top: 13px;
-    left: 15px;
-    width: 80vw;
-    overflow-x: auto;
-    height: 6.5rem;
-    background-color: #d9d9d9;
-
-    @media (min-width: 600px) {
-      top: 25px;
-      left: 20px;
-    }
-  `;
-
   return (
     <div style={{ margin: "5rem 0" }}>
       {options && sequence && (
         <React.Fragment>
           <Box sx={{ position: "relative", zIndex: "5" }}>
-            <Rect />
+            <Box className={style.rect} />
             <Typography fontSize={{ xs: 23, sm: 40 }} color="#000" fontWeight={"bold"}>
               <Header>STOCK</Header> of {stocksLegend.map((name: any) => name[data.symbol] ?? data.symbol)}
             </Typography>
-
             <Typography mb={3} fontFamily={"Raleway"} fontSize={{ xs: 14, sm: 21 }} color="#000">
               Daily Open and close of {issueDate(data.from)}
             </Typography>

@@ -1,11 +1,13 @@
-:root {
-  background: #f0cc9d;
-}
-
 [data-theme="dark"],
 [data-theme="dark"] body {
   color: #cac7c7;
-  background: #D8F3DD;
+  background: radial-gradient(#9c8566, #ffffff);
+}
+
+[data-theme="light"],
+[data-theme="light"] body {
+  color: #cac7c7;
+  background: radial-gradient(#ffffff, #d8f3dd, #a4b9a8);
 }
 
 * {
@@ -13,5 +15,3 @@
   padding: 0;
   box-sizing: border-box;
 }
-
-

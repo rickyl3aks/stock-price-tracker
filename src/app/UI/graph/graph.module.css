@@ -1,0 +1,26 @@
+.rect {
+  position: absolute;
+  z-index: -2;
+  top: 13px;
+  left: 15px;
+  width: 80vw;
+  overflow-x: auto;
+  height: 6.5rem;
+  background-color: #ecdfea;
+  -webkit-filter: blur(2px);
+  filter: blur(2px);
+  border-radius: 0.2rem;
+
+  @media (min-width: 600px) {
+    top: 25px;
+    left: 20px;
+  }
+}
+
+[data-theme="light"] .rect {
+  background-color: #ecdfea;
+}
+
+[data-theme="dark"] .rect {
+  background-color: #e5ebf3;
+}
